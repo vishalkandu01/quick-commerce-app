@@ -1,10 +1,15 @@
 import { io } from 'socket.io-client';
 
-const URL = 'http://localhost:5000';
+// this is for local
+// const URL = 'http://localhost:5000';
 
-export const socket = io(URL, {
+// export const socket = io(URL, {
+//     autoConnect: false
+// });
+
+export const socket = io({
     autoConnect: false
-});
+})
 
 export const connectSocket = (token) => {
     if (token) {
