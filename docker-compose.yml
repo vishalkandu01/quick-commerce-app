@@ -7,7 +7,7 @@
 #       - "5000:5000"
 #     environment:
 #       - MONGO_URI=mongodb://mongo:27017/quick-commerce-db
-#       - JWT_SECRET=this-is-a-super-secret-key-change-it
+#       - JWT_SECRET=this-is-a-super-secret-key
 #       - PORT=5000
 #     depends_on:
 #       - mongo
@@ -40,7 +40,7 @@ services:
     container_name: backend_service
     environment:
       - MONGO_URI=mongodb://mongo:27017/quick-commerce-db
-      - JWT_SECRET=this-is-a-super-secret-key
+      - JWT_SECRET=super-secret-key
       - PORT=5000
     depends_on:
       - mongo
