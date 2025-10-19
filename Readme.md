@@ -172,3 +172,4 @@ Full-Stack Developer | Real-Time Systems | Cloud & DevOps
 ![alt text](ss/image-2.png)
 ![alt text](ss/image-3.png)
 ![alt text](ss/image-4.png)
+![Demo Preview](ss/quick-commerce.gif)
