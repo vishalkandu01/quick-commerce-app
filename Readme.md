@@ -1,166 +1,174 @@
-🚀 Full-Stack Real-Time Order & Delivery System
+# 🏪 Real-Time Quick-Commerce
 
-1. Project Overview
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/Backend-Node.js-green.svg)]()
+[![React](https://img.shields.io/badge/Frontend-React-blue.svg)]()
+[![Docker](https://img.shields.io/badge/Docker-Container-blue.svg)]()
+[![MongoDB](https://img.shields.io/badge/Database-MongoDB-green.svg)]()
 
-This project is a full-stack, real-time quick commerce application designed to simulate a complete order and delivery workflow. It features three distinct user roles with specific functionalities:
+---
 
-Customers: Can register, log in, browse products, place orders, and track the status of their orders in real-time.
+## 📘 Project Overview
 
-Delivery Partners: Can register, log in, view a list of unassigned orders, accept an order (which locks it), and update its status from "accepted" to "delivered".
+**Real-Time Quick-Commerce** is a full-stack application for **real-time order processing and delivery tracking**.
 
-Admins: Can log in to a dashboard to monitor all orders, view all registered delivery partners, and see live status updates across the system.
+**Key Features:**
 
-The entire application is containerized using Docker and is designed to be self-hosted on a cloud virtual machine (like AWS EC2), with Nginx acting as a reverse proxy.
+- **Customers:** Place and track orders in real-time
+- **Delivery Partners:** Accept and manage deliveries
+- **Administrators:** Monitor all operations
 
-2. System Architecture Diagram
+The app is fully **containerized with Docker** and deployable on a **cloud VM**.
 
-The application follows a modern, decoupled architecture with a React frontend, a Node.js backend, a MongoDB database, and a real-time WebSocket layer. All services run in separate Docker containers and are managed by an Nginx reverse proxy.
+---
 
+## 🏗️ System Architecture
+
+The application is deployed on a single cloud VM with **Nginx** as a reverse proxy.
+
+```mermaid
 graph TD
-    subgraph "Cloud VM (AWS EC2)"
-        A[Nginx Reverse Proxy]
-        subgraph "Docker Containers"
-            B[Frontend - React/Nginx]
-            C[Backend - Node.js/Express]
-            D[Database - MongoDB]
-        end
+    A[💻 User's Browser] -->|HTTP/S, WS| B[🌐 Nginx Reverse Proxy\non Cloud VM];
+
+    subgraph Docker_Network [🐳 Docker Network]
+        B --> C[⚛️ Frontend\nReact + Nginx Container];
+        B -->|/api/*| D[🟩 Backend API\nNode.js + Express];
+        B -->|/socket.io/*| D;
+        D --> E[🗄️ MongoDB Container];
     end
+```
 
-    U[User's Browser] -->|HTTP/WebSocket| A
-    A -->|port 80| B
-    A -->|/api/*| C
-    A -->|/socket.io/*| C
-    C <--> D
+---
 
+## 🧰 Tech Stack
 
-3. Stack Used
+| Layer      | Technology                               |
+| ---------- | ---------------------------------------- |
+| Frontend   | React.js (Vite), Axios, Socket.io-client |
+| Backend    | Node.js, Express.js, Mongoose, Socket.io |
+| Database   | MongoDB                                  |
+| Auth       | JSON Web Tokens (JWT)                    |
+| Deployment | AWS EC2, Docker, Docker Compose          |
 
-Category
+---
 
-Technology
+## 📁 Folder Structure
 
-Frontend
-
-React.js (with Vite), axios, socket.io-client
-
-Backend
-
-Node.js, Express.js
-
-Database
-
-MongoDB
-
-Real-Time
-
-Socket.io
-
-Auth
-
-JSON Web Tokens (JWT)
-
-Container
-
-Docker, Docker Compose
-
-Hosting
-
-AWS EC2 (Ubuntu)
-
-Web Server
-
-Nginx (as Reverse Proxy)
-
-4. Folder Structure
-
-The project is organized into two main directories, client for the frontend and server for the backend, with containerization files at the root level.
-
-/quick-commerce-app
-├── client/
-│   ├── Dockerfile
-│   ├── nginx.conf
-│   ├── package.json
-│   └── src/
-├── server/
-│   ├── Dockerfile
-│   ├── package.json
-│   └── ... (controllers, models, routes)
+```bash
+quick-commerce-app/
+├── client/                  # React frontend
+│   ├── public/
+│   ├── src/
+│   ├── Dockerfile           # Frontend image
+│   └── nginx.conf           # Client-side routing
 │
-├── docker-compose.yml
+├── server/                  # Node.js backend
+│   ├── controllers/
+│   ├── models/
+│   ├── routes/
+│   ├── middleware/
+│   ├── Dockerfile           # Backend image
+│   └── nginx/
+│       └── nginx.conf       # Reverse proxy config
+│
+├── docker-compose.yml       # Container orchestration
+├── .gitignore
 └── README.md
+```
 
+---
 
-5. Setup Instructions
+## ⚙️ Deployment Guide
 
-To run this application, you must have Docker and Docker Compose installed.
+### 1️⃣ SSH into Server
 
-Environment Variables Needed
-
-Create a .env file inside the /server directory and add the following:
-
-# /server/.env
-PORT=5000
-MONGO_URI=mongodb://mongo:27017/quick-commerce-db
-JWT_SECRET=your_super_secret_and_long_random_string
-
-
-Git Clone Steps
-
-Clone the repository to your local machine or server:
-
-git clone <your-repository-url>
-cd quick-commerce-app
-
-
-Docker Compose Up Steps
-
-From the root directory of the project, build and run the application:
-
-docker-compose up --build -d
-
-
-This will start all services. The frontend will be accessible at http://localhost:3000.
-
-6. Hosting & Deployment Steps
-
-SSH Commands to Login
-
-Connect to your cloud VM (e.g., AWS EC2) using the provided key pair:
-
-# Replace with your key file and server IP
+```bash
 ssh -i /path/to/your-key.pem ubuntu@YOUR_PUBLIC_IP
+```
 
+### 2️⃣ Install Dependencies
 
-Deployment
+```bash
+sudo apt-get update -y
+sudo apt-get install -y git docker.io
+sudo systemctl start docker
+sudo systemctl enable docker
+sudo usermod -aG docker ubuntu
+```
 
-Launch EC2 Instance: Create a t2.micro EC2 instance with Ubuntu and configure the security group to allow traffic on ports 22 (SSH) and 80 (HTTP).
+Install Docker Compose:
 
-Install Tools: SSH into the server and install Git, Docker, and Docker Compose.
+```bash
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
 
-Deploy Code: git clone your repository onto the server.
+> Log out and back in to apply group changes.
 
-Set Up Environment: Create the /server/.env file with your production secrets.
+### 3️⃣ Clone the Repository
 
-Configure Nginx: Install Nginx and configure it as a reverse proxy to direct traffic to the correct Docker containers.
+```bash
+git clone https://your-github-repo-url.com/project.git
+cd project
+```
 
-Run Application: From the project root, run docker-compose up --build -d. The application will be live at your server's public IP address.
+### 4️⃣ Configure Environment Variables
 
-7. WebSocket Flow Explanation
+**Backend `.env`:**
 
-Real-time communication is managed by Socket.io and is crucial for the application's user experience.
+```bash
+MONGO_URI=mongodb://mongo:27017/quick-commerce-db
+JWT_SECRET=YOUR_SUPER_SECRET_AND_LONG_RANDOM_STRING
+PORT=5000
+```
 
-New Order: When a customer places an order, the backend emits a global new_order event. All connected delivery partners and admins receive this instantly.
+**Frontend `.env`:**
 
-Order Acceptance: When a delivery partner accepts an order, the backend emits:
+```bash
+VITE_API_BASE_URL=/api
+```
 
-A global order_accepted event to notify other partners.
+### 5️⃣ Build & Run Containers
 
-A private order_status_update event to the specific customer's "room" for an instant UI update.
+```bash
+docker-compose up --build -d
+```
 
-Status Updates: All subsequent status changes are broadcast as global order_status_update events, ensuring the customer and admin dashboards are always in sync.
+Access via your cloud VM’s public IP (HTTP port 80 / HTTPS port 443 if configured).
 
-8. Scaling Plan
+---
 
-How you would add Redis for socket scaling: For a multi-server setup, the default Socket.io memory adapter is insufficient. We would implement the Redis Adapter (socket.io-redis). This allows different backend instances to pass events through a central Redis pub/sub channel, ensuring all users receive real-time updates regardless of which server they are connected to.
+## 🧩 Useful Commands
 
-Horizontal scaling using Load Balancer: The application can be scaled horizontally by placing multiple backend containers behind a Load Balancer (like an AWS ALB). The Load Balancer would distribute incoming API traffic across the instances, improving performance and reliability. The load balancer must be configured with "sticky sessions" to ensure WebSocket connections are routed consistently to the same server instance.
+```bash
+# Stop containers
+docker-compose down
+
+# Rebuild only backend
+docker-compose up --build backend -d
+
+# View live logs
+docker-compose logs -f
+```
+
+---
+
+## 💡 Notes
+
+- Ensure **Docker & Docker Compose** are installed correctly.
+- Use **secure secrets** in production.
+- For real deployment, use a **domain + SSL** (Nginx + Let’s Encrypt).
+
+---
+
+## 🧑‍💻 Contributor
+
+**Vishal Kandu**
+Full-Stack Developer | Real-Time Systems | Cloud & DevOps
+
+---
+
+![alt text](ss/image-1.png)
+![alt text](ss/image-2.png)
+![alt text](ss/image-3.png)
+![alt text](ss/image-4.png)
